@@ -8,14 +8,11 @@ import (
 // Service procides user's behavior
 type Service struct{}
 
-// User is alias of entity.User struct
-type User entity.User
-
 // GetAll is get all User
-func (s Service) GetAll() ([]User, error) {
+func (s Service) GetAll() ([]entity.User, error) {
 	// DB connect
 	db := db.GetDB()
-	var u []User
+	var u []entity.User
 
 	if err := db.Find(&u).Error; err != nil {
 		return nil, err
@@ -24,17 +21,14 @@ func (s Service) GetAll() ([]User, error) {
 	return u, nil
 }
 
-func (s Service) MyFunc(user *User) (User, error) {
+func (s Service) MyFunc(user *entity.User) (*entity.User, error) {
 	db := db.GetDB()
-	var u User
-	u.Email = user.Email
-	u.Password = user.Password
 
-	if err := db.Create(&u).Error; err != nil {
-		return u, err
+	if err := db.Create(&user).Error; err != nil {
+		return nil, err
 	}
 
-	return u, nil
+	return user, nil
 }
 
 // CreateModel is create User model
@@ -54,56 +48,51 @@ func (s Service) MyFunc(user *User) (User, error) {
 // }
 
 // CreateUser is create User
-func (s Service) CreateUser(email string, password string) (User, error) {
+func (s Service) CreateUser(user *entity.User) (*entity.User, error) {
 	// func (s Service) CreateUser(u *User) (User, error) {
 	db := db.GetDB()
-	// var user User
-	var user User
-
-	user.Email = email
-	user.Password = password
 	//user.Description = "It`s Twitter username"
 	//db.Save(&user)
 	if err := db.Create(&user).Error; err != nil {
-		return user, err
+		return nil, err
 	}
 	return user, nil
 }
 
 // GetByID is get a User
-func (s Service) GetByID(id string) (User, error) {
+func (s Service) GetByID(id string) (*entity.User, error) {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	if err := db.Where("id = ?", id).First(&u).Error; err != nil {
-		return u, err
+		return nil, err
 	}
 
-	return u, nil
+	return &u, nil
 }
 
 // GetByEmail&Password
-func (s Service) GetByEmailAndPassword(email string, password string) (User, error) {
+func (s Service) GetByEmailAndPassword(email string, password string) (*entity.User, error) {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	if err := db.Where(" email = ? AND password = ?", email, password).First(&u).Error; err != nil {
-		return u, err
+		return nil, err
 	}
 
-	return u, nil
+	return &u, nil
 }
 
 // GetByPassword
-func (s Service) GetByPassword(email string) (User, error) {
+func (s Service) GetByPassword(email string) (*entity.User, error) {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	if err := db.Where(" email = ?", email).First(&u).Error; err != nil {
-		return u, err
+		return nil, err
 	}
 
-	return u, nil
+	return &u, nil
 }
 
 // UpdateByID is update a User
@@ -127,7 +116,7 @@ func (s Service) GetByPassword(email string) (User, error) {
 // DeleteByID is delete a User
 func (s Service) DeleteByID(id string) error {
 	db := db.GetDB()
-	var u User
+	var u entity.User
 
 	if err := db.Where("id = ?", id).Delete(&u).Error; err != nil {
 		return err

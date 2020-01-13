@@ -33,8 +33,6 @@ type Ping struct {
 	Rssult string
 }
 
-type User e.User
-
 // func 関数名 (引数 型, 引数 型)
 // JSON 形式で結果を返却
 // data interface{} とすると、どのような変数の型でも引数として受け取ることができる
@@ -88,7 +86,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 	//p, err := s.CreateUser(&user)
 	var s s.Service
 	spew.Dump(&user)
-	p, err := s.CreateUser(user.Email, user.Password)
+	p, err := s.CreateUser(&user)
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		//Dumpを吐く
